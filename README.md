@@ -1,20 +1,22 @@
 # StoryAD-QA
 
-Official release for **StoryTeller: Training-Free Narrative Grounding for Long-Form Audio Description**.
+Official ECCV 2026 release for **StoryTeller: Training-Free Narrative Grounding for Long-Form Audio Description**.
 
 Seung Hyun Hahm, Minh T. Dinh, SouYoung Jin<br>
 Dartmouth College<br>
 ECCV 2026
 
-[Project Page](docs/) | [Dataset](data/StoryAD-QA/) | [Evaluation Code](evaluation/) | [Prompts](prompts/)
+[Dataset](data/StoryAD-QA/) | [Evaluation Code](evaluation/) | [Prompts](prompts/)
 
 ## Overview
 
-StoryAD-QA is a multiple-choice benchmark for evaluating whether generated audio descriptions preserve the narrative information needed to understand a long-form video.
+StoryTeller is a training-free framework for long-form movie audio description. Its goal is to generate descriptions that help viewers follow a story over time, not just describe isolated frames. This matters because movie understanding depends on continuity: recurring characters, prior actions, visual consequences, scene transitions, and story-relevant details that may only become meaningful later.
 
-The benchmark accompanies StoryTeller, a training-free audio description system for movies. StoryTeller is designed around a simple observation: useful audio description is not only local captioning. It must help a viewer follow character identity, scene continuity, visual consequences, and story-relevant events over time. StoryAD-QA evaluates that goal directly by asking whether generated descriptions contain enough information to answer grounded story questions.
+StoryTeller addresses this setting by maintaining narrative state while processing clips chronologically. It uses character continuity, video-grounded facts, and a lightweight memory of salient story information to produce audio descriptions that are more coherent across long videos.
 
-This repository releases the StoryAD-QA annotations, answer keys, evaluation script, and prompt templates used in the paper. It does not include movie videos, audio, frames, subtitles, or scripts.
+StoryAD-QA is the benchmark released with StoryTeller. It evaluates whether generated audio descriptions preserve the information needed to answer grounded questions about the story. Instead of only comparing generated descriptions to reference text, StoryAD-QA tests whether the descriptions support downstream narrative understanding.
+
+This repository contains the official StoryAD-QA release for the ECCV 2026 StoryTeller paper, including annotations, answer keys, evaluation code, and prompt templates. It does not include movie videos, audio, frames, subtitles, or scripts.
 
 ## Benchmark
 
