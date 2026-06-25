@@ -1,9 +1,13 @@
 cff-version: 1.2.0
 message: "If you use StoryAD-QA, please cite the StoryTeller ECCV paper."
-title: "StoryTeller: Training-Free Long-Form Audio Description with Narrative Memory"
+title: "StoryTeller: Training-Free Narrative Grounding for Long-Form Audio Description"
 authors:
-  - family-names: "TBD"
-    given-names: "TBD"
+  - family-names: "Hahm"
+    given-names: "Seung Hyun"
+  - family-names: "Dinh"
+    given-names: "Minh T."
+  - family-names: "Jin"
+    given-names: "SouYoung"
 conference:
   name: "European Conference on Computer Vision"
   abbreviation: "ECCV"

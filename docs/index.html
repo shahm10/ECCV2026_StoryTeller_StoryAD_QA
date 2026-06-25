@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>StoryAD-QA | StoryTeller</title>
-    <meta name="description" content="StoryAD-QA: QA benchmark released with the ECCV 2026 StoryTeller paper.">
+    <meta name="description" content="StoryAD-QA: narrative-comprehension QA benchmark released with the ECCV 2026 StoryTeller paper.">
     <link rel="stylesheet" href="assets/style.css">
   </head>
   <body>
@@ -23,7 +23,7 @@
         <p class="venue">ECCV 2026 public release</p>
         <h1>StoryAD-QA</h1>
         <p class="subtitle">
-          A question-answering benchmark for evaluating story-level understanding in generated audio descriptions.
+          A narrative-comprehension QA benchmark for evaluating generated audio descriptions.
         </p>
         <div class="actions">
           <a class="button primary" href="https://github.com/shahm10/ECCV2026_StoryTeller_StoryAD_QA">GitHub</a>
@@ -38,9 +38,9 @@
       <section id="motivation">
         <h2>Why StoryAD-QA?</h2>
         <p>
-          The StoryTeller paper studies long-form audio description for movies. A strong AD system should not only
-          describe the current frame; it should preserve narrative context, resolve recurring characters, and explain
-          why events matter as the story unfolds.
+          The StoryTeller paper studies training-free long-form audio description for movies. A strong AD system should
+          not only describe the current frame; it should preserve narrative context, resolve recurring characters, and
+          explain why events matter as the story unfolds.
         </p>
         <p>
           Standard captioning metrics are useful but limited: lexical overlap does not directly measure whether a
@@ -84,16 +84,16 @@
         <h3>Schema</h3>
         <pre><code>file, raw_response, question, option_A, option_B, option_C, option_D, option_E, correct_answer, rationale</code></pre>
         <p>
-          We also provide question-only CSVs and answer-key CSVs for workflows that separate benchmark distribution
-          from answer-key evaluation.
+          The paper describes construction over 2,729 generated questions. This repository contains a verified public
+          release of 2,572 QA pairs. We provide combined files plus question-only and answer-key splits.
         </p>
       </section>
 
       <section id="evaluation">
         <h2>Evaluation Code</h2>
         <p>
-          The release includes a lightweight evaluator for multiple-choice accuracy. Predictions can be keyed by file
-          identifier, row index, or both.
+          The release includes a lightweight evaluator for multiple-choice accuracy. During evaluation, the answering
+          model should receive only generated AD text, the question, and answer choices.
         </p>
         <pre><code>pip install -r evaluation/requirements.txt
 python evaluation/evaluate_storyad_qa.py \
@@ -104,17 +104,17 @@ python evaluation/evaluate_storyad_qa.py \
       <section id="prompts">
         <h2>Prompts</h2>
         <p>
-          We release the prompts used to create, regenerate, and verify StoryAD-QA questions so that the benchmark
-          construction process is transparent and reproducible.
+          We release the prompts used for Track A generation, Track B generation, AD-only answering, and StoryTeller
+          fact verification so that the benchmark and paper pipeline are transparent.
         </p>
         <div class="two-col">
           <div>
-            <h3>Generation and Regeneration</h3>
-            <p>Templates for creating grounded five-choice QA items and rewriting failed questions.</p>
+            <h3>QA Generation</h3>
+            <p>Templates for segment-only and context-conditioned five-choice QA items.</p>
           </div>
           <div>
-            <h3>Verification</h3>
-            <p>A strict checklist for grounding, plausibility, correctness, and minor-fix decisions.</p>
+            <h3>Answering and Verification</h3>
+            <p>Templates for AD-only answer selection and strict video-grounded fact checking.</p>
           </div>
         </div>
       </section>
@@ -122,18 +122,18 @@ python evaluation/evaluate_storyad_qa.py \
       <section id="paper">
         <h2>Relation To StoryTeller</h2>
         <p>
-          StoryTeller is a training-free framework for long-form audio description with narrative memory. StoryAD-QA is
-          released as the QA-based evaluation benchmark used to test whether AD outputs preserve story understanding.
+          StoryTeller is a training-free framework for long-form audio description with an identity graph, grounded
+          facts, and narrative memory. StoryAD-QA is released as the QA-based evaluation benchmark used to test whether AD outputs preserve story understanding.
           The benchmark complements lexical AD metrics by asking answerable questions about the generated narrative.
         </p>
       </section>
 
       <section id="citation">
         <h2>Citation</h2>
-        <p>Final ECCV metadata will be added after publication.</p>
-        <pre><code>@inproceedings{storyteller2026storyadqa,
-  title = {StoryTeller: Training-Free Long-Form Audio Description with Narrative Memory},
-  author = {TBD},
+        <p>Final camera-ready metadata will be added after publication.</p>
+        <pre><code>@inproceedings{hahm2026storyteller,
+  title = {StoryTeller: Training-Free Narrative Grounding for Long-Form Audio Description},
+  author = {Hahm, Seung Hyun and Dinh, Minh T. and Jin, SouYoung},
   booktitle = {European Conference on Computer Vision},
   year = {2026}
 }</code></pre>

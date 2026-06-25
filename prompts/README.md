@@ -1,10 +1,10 @@
 # Prompts
 
-This folder contains release-ready prompt templates used in the StoryAD-QA pipeline:
+This folder contains the public prompt templates associated with StoryTeller and StoryAD-QA.
 
-- `qa_generation.md`: generate original multiple-choice QA items
-- `qa_regeneration.md`: regenerate failed/low-quality QA items
-- `qa_verification.md`: verify generated QA items against video evidence
+- `storyadqa_track_a_generation.md`: segment-only StoryAD-QA question generation
+- `storyadqa_track_b_generation.md`: context-conditioned StoryAD-QA question generation
+- `storyadqa_answering.md`: AD-only multiple-choice answering used for evaluation
+- `storyteller_fact_verification.md`: strict video-grounded fact verification used by StoryTeller
 
-Before public release, update this folder if the final ECCV submission uses a different model name, decoding setup, or prompt wording.
-
+The prompts are released to make the benchmark construction and evaluation protocol auditable. They intentionally describe the information available to each model call: generation may use video evidence and limited background for question construction, while evaluation answers must be produced from generated AD text only.
