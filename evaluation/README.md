@@ -1,6 +1,6 @@
 # Evaluation
 
-Use `evaluate_storyad_qa.py` to score multiple-choice predictions against a StoryAD-QA gold CSV.
+Use `evaluate_storyad_qa.py` to score multiple-choice predictions against a StoryAD-QA answer-key CSV.
 
 ## Prediction Format
 
@@ -26,7 +26,7 @@ If a CSV contains duplicate `file` values, add a `row_index` column to disambigu
 
 ```bash
 python evaluation/evaluate_storyad_qa.py \
-  --gold data/StoryAD-QA/movie_qa_v5_30s_gemini-3-flash-preview.csv \
+  --answers data/StoryAD-QA/movie_qa_v5_30s_gemini-3-flash-preview.csv \
   --predictions predictions/my_model_v5_30s.csv
 ```
 
@@ -40,4 +40,3 @@ The script prints:
 - invalid predictions
 - accuracy
 - per-answer accuracy
-

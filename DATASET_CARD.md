@@ -16,7 +16,7 @@ StoryTeller proposes a training-free framework with an identity graph, grounded 
 
 The release includes:
 
-- public QA CSVs and gold answers
+- public QA CSVs with answer keys
 - question-only CSVs
 - answer-key CSVs
 - an evaluation script for multiple-choice accuracy
@@ -32,8 +32,8 @@ Each row contains:
 - `raw_response`: original formatted QA generation response
 - `question`: multiple-choice question
 - `option_A` through `option_E`: answer choices
-- `correct_answer`: gold answer label
-- `rationale`: explanation for the gold answer
+- `correct_answer`: correct answer label
+- `rationale`: explanation for the correct answer
 
 ## Dataset Size
 

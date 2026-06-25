@@ -97,7 +97,7 @@
         </p>
         <pre><code>pip install -r evaluation/requirements.txt
 python evaluation/evaluate_storyad_qa.py \
-  --gold data/StoryAD-QA/movie_qa_v5_30s_gemini-3-flash-preview.csv \
+  --answers data/StoryAD-QA/movie_qa_v5_30s_gemini-3-flash-preview.csv \
   --predictions predictions/my_model_v5_30s.csv</code></pre>
       </section>
 
@@ -120,7 +120,7 @@ python evaluation/evaluate_storyad_qa.py \
       </section>
 
       <section id="paper">
-        <h2>Relation To StoryTeller</h2>
+        <h2>StoryTeller</h2>
         <p>
           StoryTeller is a training-free framework for long-form audio description with an identity graph, grounded
           facts, and narrative memory. StoryAD-QA is released as the QA-based evaluation benchmark used to test whether AD outputs preserve story understanding.

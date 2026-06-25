@@ -1,46 +1,52 @@
 # StoryAD-QA
 
-Official dataset, evaluation, and prompt release for the ECCV 2026 paper:
+Official release for **StoryTeller: Training-Free Narrative Grounding for Long-Form Audio Description**.
 
-**StoryTeller: Training-Free Narrative Grounding for Long-Form Audio Description**
+Seung Hyun Hahm, Minh T. Dinh, SouYoung Jin<br>
+Dartmouth College<br>
+ECCV 2026
 
-StoryAD-QA is a multiple-choice question-answering benchmark for evaluating whether generated audio descriptions preserve the story of a long-form video. The benchmark is released with StoryTeller, a training-free framework for movie audio description that grounds narration in visual evidence, public story context, character continuity, and a lightweight narrative memory.
+[Project Page](docs/) | [Dataset](data/StoryAD-QA/) | [Evaluation Code](evaluation/) | [Prompts](prompts/)
 
-## Why We Release This Benchmark
+## Overview
 
-Audio description (AD) should help blind and low-vision audiences follow not only what is visible in the current shot, but also how events connect across time: who is present, what changed, which earlier event matters now, and why a visual action is narratively important.
+StoryAD-QA is a multiple-choice benchmark for evaluating whether generated audio descriptions preserve the narrative information needed to understand a long-form video.
 
-Most automatic AD evaluations still rely on captioning metrics such as CIDEr, SPICE, BLEU, and ROUGE-L. These metrics are useful for measuring overlap with reference text, but they do not directly test whether an AD output contains the information needed to understand the story. A description can use different words from a reference and still be useful; it can also match local words while failing to preserve narrative state.
+The benchmark accompanies StoryTeller, a training-free audio description system for movies. StoryTeller is designed around a simple observation: useful audio description is not only local captioning. It must help a viewer follow character identity, scene continuity, visual consequences, and story-relevant events over time. StoryAD-QA evaluates that goal directly by asking whether generated descriptions contain enough information to answer grounded story questions.
 
-StoryAD-QA addresses this gap. It turns long-form AD evaluation into a downstream story-reasoning test: given only a system's generated AD text, can an answering model choose the correct answer to grounded questions about the video?
+This repository releases the StoryAD-QA annotations, answer keys, evaluation script, and prompt templates used in the paper. It does not include movie videos, audio, frames, subtitles, or scripts.
 
-## Relation To StoryTeller
+## Benchmark
 
-The StoryTeller paper studies training-free long-form audio description. StoryTeller processes movie clips chronologically, builds an identity graph for recurring characters, induces video-supported narrative facts, and maintains a salience-weighted memory that can be reused in later scenes. Public metadata such as movie summaries and character lists can suggest context, but facts are only retained when they are grounded in the video and pass verification.
+StoryAD-QA contains five-option multiple-choice questions over movie clips. The questions are visually grounded and are designed to test whether an audio description preserves information that matters for story understanding.
 
-StoryAD-QA is the paper's QA-based evaluation benchmark. It is designed to complement lexical AD metrics by measuring whether generated descriptions support narrative comprehension.
+The benchmark includes two settings:
 
-## Benchmark Design
+| Setting | Description |
+|---|---|
+| Track A: segment QA | Questions are generated from a single clip window. The description for that same window is used for answering. |
+| Track B: context QA | Questions are generated from prior context plus a target clip. Only the target-clip description is used for answering, so the task tests whether the description carries the relevant context forward. |
 
-StoryAD-QA contains five-choice multiple-choice questions. The question generation model sees video evidence and limited movie background for question construction, but evaluation is stricter: the answering model receives only the generated AD text plus the question and answer choices. It does not receive the video, movie title, plot summaries, subtitles, scripts, retrieved metadata, or any other external context.
+In the paper, StoryAD-QA is used as an evaluation benchmark for generated AD. The answering model receives only:
 
-The benchmark has two evaluation settings:
+- the generated audio description
+- the question
+- the five answer choices
 
-- **Track A: segment-only QA.** Questions are generated from a single continuous clip window. Evaluation uses the AD generated for that same window.
-- **Track B: context-conditioned QA.** Questions are generated from a short prior context window plus a target clip. Evaluation uses only the AD for the target clip, testing whether the description preserves visually grounded cues that make the target moment understandable.
+It does not receive the video, movie title, plot summary, subtitles, script, retrieved metadata, or outside context.
 
-The paper describes the benchmark construction process over 2,729 generated questions. This repository provides a verified public release of **2,572 QA pairs** after validation and cleanup.
+The paper describes benchmark construction over 2,729 generated questions. This repository contains a verified public release of **2,572 QA pairs** after validation and cleanup.
 
-## What Is Included
+## Repository Structure
 
 ```text
 data/
-  StoryAD-QA/                    # canonical QA CSVs with gold answers
-  StoryAD-QA-questions/          # question/options-only split
-  StoryAD-QA-answer-key/         # answer-key/rationale split
-  dataset_summary.csv            # per-file counts
+  StoryAD-QA/                    # full QA files with answer keys
+  StoryAD-QA-questions/          # questions and answer choices only
+  StoryAD-QA-answer-key/         # correct answers and rationales
+  dataset_summary.csv            # counts by file
 evaluation/
-  evaluate_storyad_qa.py         # multiple-choice accuracy evaluator
+  evaluate_storyad_qa.py         # accuracy evaluator
   requirements.txt
 prompts/
   storyadqa_track_a_generation.md
@@ -48,39 +54,25 @@ prompts/
   storyadqa_answering.md
   storyteller_fact_verification.md
 docs/
-  index.html                     # GitHub Pages project website
-  assets/style.css
+  index.html                     # GitHub Pages site
 ```
 
-This repository releases annotations, answers, prompt templates, and evaluation code. It does **not** release movie videos, audio, frames, subtitles, scripts, or copyrighted media.
+## Data Format
 
-## Data Files
+The main release files are in `data/StoryAD-QA/`.
 
-The canonical public CSVs are in:
+Each CSV row contains:
 
-```text
-data/StoryAD-QA/
-```
+| Column | Description |
+|---|---|
+| `file` | Clip identifier used to align the question with an evaluation window |
+| `raw_response` | Original formatted model response used during dataset construction |
+| `question` | Multiple-choice question |
+| `option_A` ... `option_E` | Five answer choices |
+| `correct_answer` | Correct choice, one of `A`, `B`, `C`, `D`, or `E` |
+| `rationale` | Short explanation for the correct choice |
 
-Each row contains:
-
-```text
-file, raw_response, question, option_A, option_B, option_C, option_D, option_E, correct_answer, rationale
-```
-
-- `file`: clip identifier used for alignment with the evaluation windows
-- `raw_response`: original formatted model response used to create the row
-- `question`: multiple-choice question
-- `option_A` through `option_E`: answer choices
-- `correct_answer`: gold label, one of `A`, `B`, `C`, `D`, or `E`
-- `rationale`: short explanation for the gold answer
-
-The combined files in `data/StoryAD-QA/` are the authoritative release for reproducibility. We also provide two convenience splits:
-
-- `data/StoryAD-QA-questions/`: question and option fields without the gold answer
-- `data/StoryAD-QA-answer-key/`: answer labels and rationales
-
-Keeping both formats is intentional. The combined files make the released dataset transparent and easy to audit, while the split files support benchmark-style use where questions and answer keys are handled separately.
+The full files in `data/StoryAD-QA/` are the main dataset. The question-only and answer-key folders are provided for workflows where questions and answers should be handled separately.
 
 | File | Setting | Questions |
 |---|---|---:|
@@ -88,52 +80,64 @@ Keeping both formats is intentional. The combined files make the released datase
 | `movie_qa_v5_60s_gemini-3-flash-preview.csv` | Track A, 60s segment | 430 |
 | `movie_qa_v5_120s_gemini-3-flash-preview.csv` | Track A, 120s segment | 212 |
 | `movie_qa_v5_240s_gemini-3-flash-preview.csv` | Track A, 240s segment | 109 |
-| `movie_qa_v9_60s_gemini-3-flash-preview.csv` | Track B, context-conditioned | 449 |
-| `movie_qa_v9_90s_gemini-3-flash-preview.csv` | Track B, context-conditioned | 294 |
-| `movie_qa_v9_120s_gemini-3-flash-preview.csv` | Track B, context-conditioned | 220 |
+| `movie_qa_v9_60s_gemini-3-flash-preview.csv` | Track B, context QA | 449 |
+| `movie_qa_v9_90s_gemini-3-flash-preview.csv` | Track B, context QA | 294 |
+| `movie_qa_v9_120s_gemini-3-flash-preview.csv` | Track B, context QA | 220 |
 
 ## Evaluation
 
-To evaluate an AD system:
+The evaluation code scores multiple-choice predictions against the released answer key.
 
-1. Generate audio descriptions for the corresponding movie clips or windows.
-2. Use the released StoryAD-QA answering prompt to answer each question from the generated AD text only.
-3. Save model predictions as a CSV with `file,prediction`, where `prediction` is one of `A`, `B`, `C`, `D`, or `E`.
-4. Score predictions against the gold CSV.
+The intended workflow is:
+
+1. Run an audio description system on the evaluation clips.
+2. Ask an answering model to answer each StoryAD-QA question using only the generated AD text.
+3. Save the selected choices in a prediction CSV.
+4. Run the evaluator to compute accuracy.
+
+Prediction CSV format:
+
+```text
+file,prediction
+movie_id/segment_0001.mp4,A
+movie_id/segment_0002.mp4,D
+```
+
+If a file identifier appears more than once, include `row_index`:
+
+```text
+file,row_index,prediction
+movie_id/segment_0001.mp4,0,A
+movie_id/segment_0001.mp4,1,C
+```
+
+Run:
 
 ```bash
 pip install -r evaluation/requirements.txt
 python evaluation/evaluate_storyad_qa.py \
-  --gold data/StoryAD-QA/movie_qa_v5_30s_gemini-3-flash-preview.csv \
+  --answers data/StoryAD-QA/movie_qa_v5_30s_gemini-3-flash-preview.csv \
   --predictions path/to/predictions.csv
 ```
 
-The evaluator reports total examples, evaluated examples, missing predictions, invalid predictions, overall accuracy, and per-answer accuracy. The script does not call an LLM; it scores predictions that have already been produced.
+The script reports the number of questions, matched predictions, missing predictions, invalid predictions, and accuracy. It does not call a language model; it only scores predictions that have already been produced.
 
 ## Prompts
 
-The `prompts/` folder contains the prompt templates used for the benchmark and paper pipeline:
+The `prompts/` folder includes the public prompt templates for:
 
-- Track A question generation from a single video segment
+- Track A question generation
 - Track B context-conditioned question generation
-- AD-only multiple-choice answering for evaluation
-- strict video-grounded fact verification used by StoryTeller
+- AD-only answer selection
+- StoryTeller video-grounded fact verification
 
-We include prompts because StoryAD-QA is not only a dataset release; it is also a reproducible evaluation protocol.
+These prompts are included so the dataset construction and evaluation protocol are transparent.
 
-## GitHub Pages
+## Notes On Media
 
-The `docs/` folder contains a lightweight project website suitable for GitHub Pages. To publish it, enable GitHub Pages from the `main` branch and `/docs` folder in the repository settings.
-
-## Media And Licensing
-
-This release intentionally excludes copyrighted video media and derived media assets. The `file` field is an identifier for alignment with the evaluation clips used in the paper. Users are responsible for ensuring lawful access to any underlying video content.
-
-Please confirm the final license with all authors before public release.
+This repository releases annotations and evaluation code only. It does not redistribute copyrighted videos or derived media. The `file` column is an identifier for aligning questions with the evaluation clips used in the paper. Users are responsible for obtaining lawful access to any underlying video content.
 
 ## Citation
-
-Please cite the StoryTeller ECCV 2026 paper when using StoryAD-QA:
 
 ```bibtex
 @inproceedings{hahm2026storyteller,

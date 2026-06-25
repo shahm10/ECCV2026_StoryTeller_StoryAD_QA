@@ -55,18 +55,18 @@ def load_predictions(path: Path) -> Tuple[Dict[Tuple[str, str], str], str]:
     return predictions, mode
 
 
-def evaluate(gold_path: Path, predictions_path: Path) -> dict:
-    gold = pd.read_csv(gold_path).fillna("")
+def evaluate(answers_path: Path, predictions_path: Path) -> dict:
+    answers = pd.read_csv(answers_path).fillna("")
     predictions, mode = load_predictions(predictions_path)
 
-    total = len(gold)
+    total = len(answers)
     evaluated = 0
     correct = 0
     missing = 0
     invalid = 0
     by_answer = defaultdict(lambda: Counter(total=0, evaluated=0, correct=0))
 
-    for idx, row in gold.iterrows():
+    for idx, row in answers.iterrows():
         answer = normalize_choice(row.get("correct_answer"))
         key = row_key(row, idx, mode)
         pred = predictions.get(key, "")
@@ -94,7 +94,7 @@ def evaluate(gold_path: Path, predictions_path: Path) -> dict:
         }
 
     return {
-        "gold": str(gold_path),
+        "answers": str(answers_path),
         "predictions": str(predictions_path),
         "key_mode": mode,
         "total": total,
@@ -109,19 +109,25 @@ def evaluate(gold_path: Path, predictions_path: Path) -> dict:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Evaluate StoryAD-QA multiple-choice predictions.")
-    parser.add_argument("--gold", type=Path, required=True, help="Gold StoryAD-QA CSV.")
+    parser.add_argument("--answers", type=Path, help="StoryAD-QA CSV containing the answer key.")
+    parser.add_argument("--gold", type=Path, help=argparse.SUPPRESS)
     parser.add_argument("--predictions", type=Path, required=True, help="Prediction CSV.")
     parser.add_argument("--json", action="store_true", help="Print JSON output.")
-    return parser.parse_args()
+    args = parser.parse_args()
+    if args.answers is None:
+        args.answers = args.gold
+    if args.answers is None:
+        parser.error("--answers is required")
+    return args
 
 
 def main() -> None:
     args = parse_args()
-    result = evaluate(args.gold, args.predictions)
+    result = evaluate(args.answers, args.predictions)
     if args.json:
         print(json.dumps(result, indent=2))
         return
-    print(f"Gold: {result['gold']}")
+    print(f"Answers: {result['answers']}")
     print(f"Predictions: {result['predictions']}")
     print(f"Key mode: {result['key_mode']}")
     print(f"Total: {result['total']}")
@@ -142,4 +148,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
