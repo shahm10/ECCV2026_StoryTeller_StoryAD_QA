@@ -1,6 +1,7 @@
 # StoryAD-QA
 
 Official ECCV 2026 release for **StoryTeller: Training-Free Narrative Grounding for Long-Form Audio Description**.
+This is not a codebase, but for the StoryAD QA benchmark.
 
 Seung Hyun Hahm, Minh T. Dinh, SouYoung Jin<br>
 Dartmouth College<br>
